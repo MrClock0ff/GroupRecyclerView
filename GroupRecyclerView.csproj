@@ -63,6 +63,13 @@
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Widgets\IItemGroup.cs" />
+    <Compile Include="Widgets\GroupRecyclerView.cs" />
+    <Compile Include="Widgets\IGroupRecyclerViewAdapter.cs" />
+    <Compile Include="Widgets\GroupRecyclerViewAdapter.cs" />
+    <Compile Include="Extensions\EnumerableExtensions.cs" />
+    <Compile Include="Widgets\GroupRecyclerViewHolder.cs" />
+    <Compile Include="Widgets\IGroupRecyclerViewHolder.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -97,6 +104,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\drawable\" />
+    <Folder Include="Widgets\" />
+    <Folder Include="Extensions\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Xamarin.AndroidX.AppCompat" Version="1.2.0.5" />
