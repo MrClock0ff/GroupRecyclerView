@@ -35,7 +35,8 @@ namespace GroupRecyclerView
             DraggableGroupRecyclerView recyclerView = FindViewById<DraggableGroupRecyclerView>(Resource.Id.RecyclerView);
             recyclerView.ItemsSource = groups;
             recyclerView.ItemClick += RecyclerView_ItemClick;
-        }
+            recyclerView.ItemMoved += RecyclerView_ItemMoved;
+        }        
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
@@ -47,6 +48,11 @@ namespace GroupRecyclerView
         private void RecyclerView_ItemClick(object sender, object e)
         {
             System.Diagnostics.Debug.WriteLine($"Item clicked {e}", "DEBUG");
+        }
+
+        private void RecyclerView_ItemMoved(object sender, GroupItemMovedEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine($"Item moved {e}", "DEBUG");
         }
 
         private class ItemGroup : List<string>, IItemGroup

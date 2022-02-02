@@ -1,11 +1,7 @@
 ﻿using System;
 using Android.Content;
-using Android.Graphics;
-using Android.Graphics.Drawables;
 using Android.Runtime;
 using Android.Util;
-using Android.Views;
-using AndroidX.Core.Content;
 using AndroidX.RecyclerView.Widget;
 
 namespace GroupRecyclerView.Widgets
@@ -16,6 +12,14 @@ namespace GroupRecyclerView.Widgets
     [Register("grouprecyclerview.widgets.DraggableGroupRecyclerView")]
     public class DraggableGroupRecyclerView : GroupRecyclerView
     {
+        IDraggableGroupRecyclerViewAdapter _adapter;
+        private bool _disposed;
+
+        /// <summary>
+        /// Triggered when group item moved
+        /// </summary>
+        public event EventHandler<GroupItemMovedEventArgs> ItemMoved;
+
         /// <summary>
         /// Create new DraggableGroupRecyclerView instance
         /// </summary>
@@ -56,9 +60,18 @@ namespace GroupRecyclerView.Widgets
         public DraggableGroupRecyclerView(Context context, IAttributeSet attrs, int defStyleAttr, IDraggableGroupRecyclerViewAdapter adapter)
             : base(context, attrs, defStyleAttr, adapter)
         {
+            if (!(adapter is IDraggableGroupRecyclerViewAdapter))
+            {
+                throw new Exception($"Wrong adapter type. Expected: {nameof(IDraggableGroupRecyclerViewAdapter)}.");
+            }
+
+            _adapter = adapter;
+
             ItemGroupMoveSimpleCallback moveCallback = new ItemGroupMoveSimpleCallback(adapter);
             ItemTouchHelper itemTouchHelper = new ItemTouchHelper(moveCallback);
             itemTouchHelper.AttachToRecyclerView(this);
+
+            adapter.ItemMoved += AdapterItemMoved_Handler;
         }
 
         /// <summary>
@@ -71,66 +84,35 @@ namespace GroupRecyclerView.Widgets
         {
         }
 
-        /// <summary>
-        /// Custom GroupRecyclerViewAdapter which adds selectable item background
-        /// </summary>
-        private class DraggableGroupRecyclerViewAdapter
-            : GroupRecyclerViewAdapter, IDraggableGroupRecyclerViewAdapter
+        protected override void Dispose(bool disposing)
         {
-            public DraggableGroupRecyclerViewAdapter(Context context)
-                : base(context)
+            if (_disposed)
             {
+                return;
             }
 
-            public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)
+            _disposed = true;
+
+            if (disposing)
             {
-                RecyclerView.ViewHolder viewHolder = base.OnCreateViewHolder(parent, viewType);
-
-                if (viewHolder.ItemView == null)
+                if (_adapter != null)
                 {
-                    return viewHolder;
+                    _adapter.ItemMoved -= AdapterItemMoved_Handler;
+                    _adapter = null;
                 }
-
-                if (!(viewHolder is IGroupRecyclerViewHolder groupRecyclerViewHolder))
-                {
-                    return viewHolder;
-                }
-
-                if (groupRecyclerViewHolder.Id == GroupViewType)
-                {
-                    return viewHolder;
-                }
-
-                viewHolder.ItemView.Background = new ColorDrawable(Color.White);
-
-                TypedValue selectableItemBackgroundTypedValue = new TypedValue();
-
-                if (!Context.Theme.ResolveAttribute(Resource.Attribute.selectableItemBackground, selectableItemBackgroundTypedValue, true))
-                {
-                    return viewHolder;
-                }
-
-                int selectableItemBackgroundResource = selectableItemBackgroundTypedValue.ResourceId;
-                viewHolder.ItemView.Foreground = ContextCompat.GetDrawable(Context, selectableItemBackgroundResource);
-
-                return viewHolder;
             }
 
-            #region IDraggableGroupRecyclerViewAdapter interface implementation
-            public bool OnMove(RecyclerView.ViewHolder viewHolder1, RecyclerView.ViewHolder viewHolder2)
-            {
-                int fromPosition = viewHolder1.AdapterPosition;
-                int toPosition = viewHolder2.AdapterPosition;
+            base.Dispose(disposing);
+        }
 
-                // Do not move any item above the very first group item (group header) position
-                if (toPosition <= 0)
-                {
-                    return false;
-                }
-
-                return true;
-            }
-            #endregion
+        /// <summary>
+        /// Handle adapter item moved event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AdapterItemMoved_Handler(object sender, GroupItemMovedEventArgs e)
+        {
+            ItemMoved?.Invoke(this, e);
         }
     }
 }

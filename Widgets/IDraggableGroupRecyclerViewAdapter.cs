@@ -1,4 +1,5 @@
-﻿using AndroidX.RecyclerView.Widget;
+﻿using System;
+using AndroidX.RecyclerView.Widget;
 
 namespace GroupRecyclerView.Widgets
 {
@@ -7,6 +8,11 @@ namespace GroupRecyclerView.Widgets
     /// </summary>
     public interface IDraggableGroupRecyclerViewAdapter : IGroupRecyclerViewAdapter
     {
+        /// <summary>
+        /// Triggered when item moved vertically
+        /// </summary>
+        event EventHandler<GroupItemMovedEventArgs> ItemMoved;
+
         /// <summary>
         /// Handle move of viewHolder1 into viewHolder2 position
         /// </summary>
