@@ -34,7 +34,11 @@ namespace GroupRecyclerView.Widgets
                 return false;
             }
 
-            ItemMoved?.Invoke(this, new GroupItemMovedEventArgs());
+            IGroupRecyclerViewHolder groupRecyclerViewHolder1 = viewHolder1 as IGroupRecyclerViewHolder;
+            IGroupRecyclerViewHolder groupRecyclerViewHolder2 = viewHolder2 as IGroupRecyclerViewHolder;
+
+            ItemMoved?.Invoke(this, new GroupItemMovedEventArgs(groupRecyclerViewHolder1?.DataContext, groupRecyclerViewHolder2?.DataContext));
+
             return true;
         }
         #endregion

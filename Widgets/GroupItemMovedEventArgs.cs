@@ -10,8 +10,20 @@ namespace GroupRecyclerView.Widgets
         /// <summary>
         /// Create new event arguments instance
         /// </summary>
-        public GroupItemMovedEventArgs()
+        public GroupItemMovedEventArgs(object source, object target)
         {
+            Source = source;
+            Target = target;
         }
+
+        /// <summary>
+        /// Moving object
+        /// </summary>
+        public object Source { get; }
+
+        /// <summary>
+        /// Moving object inserted into target object position
+        /// </summary>
+        public object Target { get; }
     }
 }
