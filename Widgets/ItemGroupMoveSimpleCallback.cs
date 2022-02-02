@@ -7,29 +7,45 @@ namespace GroupRecyclerView.Widgets
     /// </summary>
     public class ItemGroupMoveSimpleCallback : ItemTouchHelper.SimpleCallback
     {
-        private IDraggableGroupRecyclerView _draggableGroupRecyclerView;
+        private IDraggableGroupRecyclerViewAdapter _recyclerViewAdapter;
         private bool _disposed;
 
         /// <summary>
         /// Create new callback instance
         /// </summary>
         /// <param name="draggableGroupRecyclerView"></param>
-        public ItemGroupMoveSimpleCallback(IDraggableGroupRecyclerView draggableGroupRecyclerView)
+        public ItemGroupMoveSimpleCallback(IDraggableGroupRecyclerViewAdapter recyclerViewAdapter)
             : base(ItemTouchHelper.Up | ItemTouchHelper.Down | ItemTouchHelper.Start | ItemTouchHelper.End, 0)
         {
-            _draggableGroupRecyclerView = draggableGroupRecyclerView;
+            _recyclerViewAdapter = recyclerViewAdapter;
         }
 
         #region ItemTouchHelper.SimpleCallback implementation
         public override bool OnMove(RecyclerView p0, RecyclerView.ViewHolder p1, RecyclerView.ViewHolder p2)
         {
-            return _draggableGroupRecyclerView.OnMove(p1, p2);
+            return _recyclerViewAdapter.OnMove(p1, p2);
         }
 
         public override void OnSwiped(RecyclerView.ViewHolder p0, int p1)
         {
         }
         #endregion
+
+        public override int GetMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder)
+        {
+            if (!(viewHolder is IGroupRecyclerViewHolder groupRecyclerViewHolder))
+            {
+                return base.GetMovementFlags(recyclerView, viewHolder);
+            }
+
+            if (groupRecyclerViewHolder.Id != _recyclerViewAdapter.GroupViewType)
+            {
+                return base.GetMovementFlags(recyclerView, viewHolder);
+            }
+
+            // Prevent user from moving group items (group headers)
+            return MakeMovementFlags(0, 0);
+        }
 
         protected override void Dispose(bool disposing)
         {
@@ -42,7 +58,7 @@ namespace GroupRecyclerView.Widgets
 
             if (disposing)
             {
-                _draggableGroupRecyclerView = null;
+                _recyclerViewAdapter = null;
             }
 
             base.Dispose(disposing);

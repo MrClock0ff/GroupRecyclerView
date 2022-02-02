@@ -14,8 +14,7 @@ namespace GroupRecyclerView.Widgets
     /// GroupRecyclerView cappable of moving the item between the groups
     /// </summary>
     [Register("grouprecyclerview.widgets.DraggableGroupRecyclerView")]
-    public class DraggableGroupRecyclerView
-        : GroupRecyclerView, IDraggableGroupRecyclerView
+    public class DraggableGroupRecyclerView : GroupRecyclerView
     {
         /// <summary>
         /// Create new DraggableGroupRecyclerView instance
@@ -54,26 +53,13 @@ namespace GroupRecyclerView.Widgets
         /// <param name="attrs"></param>
         /// <param name="defStyleAttr"></param>
         /// <param name="adapter"></param>
-        public DraggableGroupRecyclerView(Context context, IAttributeSet attrs, int defStyleAttr, IGroupRecyclerViewAdapter adapter)
+        public DraggableGroupRecyclerView(Context context, IAttributeSet attrs, int defStyleAttr, IDraggableGroupRecyclerViewAdapter adapter)
             : base(context, attrs, defStyleAttr, adapter)
         {
-            ItemGroupMoveSimpleCallback moveCallback = new ItemGroupMoveSimpleCallback(this);
+            ItemGroupMoveSimpleCallback moveCallback = new ItemGroupMoveSimpleCallback(adapter);
             ItemTouchHelper itemTouchHelper = new ItemTouchHelper(moveCallback);
             itemTouchHelper.AttachToRecyclerView(this);
         }
-
-        #region IDraggableGroupRecyclerView implementation
-        /// <summary>
-        /// Handle move of viewHolder1 into viewHolder2 position
-        /// </summary>
-        /// <param name="viewHolder1"></param>
-        /// <param name="viewHolder2"></param>
-        /// <returns></returns>
-        public bool OnMove(RecyclerView.ViewHolder viewHolder1, RecyclerView.ViewHolder viewHolder2)
-        {
-            return true;
-        }
-        #endregion
 
         /// <summary>
         /// Constructor required for inflated instances
@@ -88,7 +74,8 @@ namespace GroupRecyclerView.Widgets
         /// <summary>
         /// Custom GroupRecyclerViewAdapter which adds selectable item background
         /// </summary>
-        private class DraggableGroupRecyclerViewAdapter : GroupRecyclerViewAdapter
+        private class DraggableGroupRecyclerViewAdapter
+            : GroupRecyclerViewAdapter, IDraggableGroupRecyclerViewAdapter
         {
             public DraggableGroupRecyclerViewAdapter(Context context)
                 : base(context)
@@ -128,6 +115,22 @@ namespace GroupRecyclerView.Widgets
 
                 return viewHolder;
             }
+
+            #region IDraggableGroupRecyclerViewAdapter interface implementation
+            public bool OnMove(RecyclerView.ViewHolder viewHolder1, RecyclerView.ViewHolder viewHolder2)
+            {
+                int fromPosition = viewHolder1.AdapterPosition;
+                int toPosition = viewHolder2.AdapterPosition;
+
+                // Do not move any item above the very first group item (group header) position
+                if (toPosition <= 0)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            #endregion
         }
     }
 }

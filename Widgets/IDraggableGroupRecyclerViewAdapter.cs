@@ -3,9 +3,9 @@
 namespace GroupRecyclerView.Widgets
 {
     /// <summary>
-    /// GroupRecyclerView cappable of moving the item between the groups
+    /// GroupRecyclerView adapter cappable of moving the item between the groups
     /// </summary>
-    public interface IDraggableGroupRecyclerView
+    public interface IDraggableGroupRecyclerViewAdapter : IGroupRecyclerViewAdapter
     {
         /// <summary>
         /// Handle move of viewHolder1 into viewHolder2 position

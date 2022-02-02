@@ -22,5 +22,15 @@ namespace GroupRecyclerView.Widgets
         /// Collection of the items in the adapter
         /// </summary>
         IEnumerable<IItemGroup> ItemsSource { get; set; }
+
+        /// <summary>
+        /// Group view type
+        /// </summary>
+        int GroupViewType { get; }
+
+        /// <summary>
+        /// Group item view type
+        /// </summary>
+        int ItemViewType { get; }
     }
 }
