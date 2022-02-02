@@ -84,7 +84,7 @@ namespace GroupRecyclerView.Widgets
         /// <param name="attrs"></param>
         /// <param name="defStyleAttr"></param>
         /// <param name="adapter"></param>
-        public GroupRecyclerView(Context context, IAttributeSet attrs, int defStyleAttr, GroupRecyclerViewAdapter adapter)
+        public GroupRecyclerView(Context context, IAttributeSet attrs, int defStyleAttr, IGroupRecyclerViewAdapter adapter)
             : base (context, attrs, defStyleAttr)
         {
             var currentLayoutManager = GetLayoutManager();
@@ -96,13 +96,16 @@ namespace GroupRecyclerView.Widgets
                 SetLayoutManager(new LinearLayoutManager(context));
             }
 
-            if (adapter != null)
+            _adapter = adapter;
+
+            if (_adapter == null)
             {
                 _adapter = new GroupRecyclerViewAdapter(context);
-                _adapter.ItemClick += Adapter_ItemClick;
-                _adapter.ItemLongClick += Adapter_ItemLongClick;
-                SetAdapter(_adapter as RecyclerView.Adapter);
             }
+
+            _adapter.ItemClick += Adapter_ItemClick;
+            _adapter.ItemLongClick += Adapter_ItemLongClick;
+            SetAdapter(_adapter as RecyclerView.Adapter);
         }
 
         /// <summary>

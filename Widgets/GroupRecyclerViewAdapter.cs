@@ -17,11 +17,8 @@ namespace GroupRecyclerView.Widgets
     /// </summary>
     public class GroupRecyclerViewAdapter : RecyclerView.Adapter, IGroupRecyclerViewAdapter
     {
-        private readonly int _groupViewType;
-        private readonly int _itemViewType;
         private List<RecyclerViewAdapterItem> _flattenItemsSource;
         private IEnumerable<IItemGroup> _itemsSource;
-        private Context _context;
         private bool _disposed;
 
         /// <summary>
@@ -30,10 +27,25 @@ namespace GroupRecyclerView.Widgets
         /// <param name="context"></param>
         public GroupRecyclerViewAdapter(Context context)
         {
-            _context = context;
-            _groupViewType = View.GenerateViewId();
-            _itemViewType = View.GenerateViewId();
+            Context = context;
+            GroupViewType = View.GenerateViewId();
+            ItemViewType = View.GenerateViewId();
         }
+
+        /// <summary>
+        /// Group view type
+        /// </summary>
+        public int GroupViewType { get; }
+
+        /// <summary>
+        /// Group item view type
+        /// </summary>
+        public int ItemViewType { get; }
+
+        /// <summary>
+        /// Current context instance
+        /// </summary>
+        public Context Context { get; private set; }
 
         #region IGroupRecyclerViewAdapter implementation
         /// <summary>
@@ -101,8 +113,8 @@ namespace GroupRecyclerView.Widgets
         public override int GetItemViewType(int position)
         {
             return _flattenItemsSource[position].IsGroup
-                ? _groupViewType
-                : _itemViewType;
+                ? GroupViewType
+                : ItemViewType;
         }
 
         public override void OnViewAttachedToWindow(Java.Lang.Object holder)
@@ -152,7 +164,7 @@ namespace GroupRecyclerView.Widgets
             {
                 _flattenItemsSource = null;
                 _itemsSource = null;
-                _context = null;
+                Context = null;
             }
 
             base.Dispose(disposing);
@@ -209,9 +221,9 @@ namespace GroupRecyclerView.Widgets
         private View CreateView(ViewGroup parent, int viewType)
         {
             int viewTemplateId = global::Android.Resource.Layout.SimpleListItem1;
-            TextView view = LayoutInflater.FromContext(_context).Inflate(viewTemplateId, parent, false) as TextView;
+            TextView view = LayoutInflater.FromContext(Context).Inflate(viewTemplateId, parent, false) as TextView;
 
-            if (viewType == _groupViewType)
+            if (viewType == GroupViewType)
             {
                 view.Background = new ColorDrawable(Color.Gray);
                 view.SetAllCaps(true);

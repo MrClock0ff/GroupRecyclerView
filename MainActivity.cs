@@ -32,7 +32,7 @@ namespace GroupRecyclerView
                     "Item 6"
                 }
             };
-            Widgets.GroupRecyclerView recyclerView = FindViewById<Widgets.GroupRecyclerView>(Resource.Id.RecyclerView);
+            DraggableGroupRecyclerView recyclerView = FindViewById<DraggableGroupRecyclerView>(Resource.Id.RecyclerView);
             recyclerView.ItemsSource = groups;
             recyclerView.ItemClick += RecyclerView_ItemClick;
         }

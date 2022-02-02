@@ -70,6 +70,9 @@
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Widgets\GroupRecyclerViewHolder.cs" />
     <Compile Include="Widgets\IGroupRecyclerViewHolder.cs" />
+    <Compile Include="Widgets\ItemGroupMoveSimpleCallback.cs" />
+    <Compile Include="Widgets\DraggableGroupRecyclerView.cs" />
+    <Compile Include="Widgets\IDraggableGroupRecyclerView.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
