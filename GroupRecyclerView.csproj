@@ -75,6 +75,7 @@
     <Compile Include="Widgets\IDraggableGroupRecyclerViewAdapter.cs" />
     <Compile Include="Widgets\DraggableGroupRecyclerViewAdapter.cs" />
     <Compile Include="Widgets\GroupItemMovedEventArgs.cs" />
+    <Compile Include="Widgets\IGroupRecyclerViewAdapterItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

@@ -170,6 +170,11 @@ namespace GroupRecyclerView.Widgets
             base.Dispose(disposing);
         }
 
+        protected virtual IGroupRecyclerViewAdapterItem GetAdapterItem(int position)
+        {
+            return _flattenItemsSource[position];
+        }
+
         /// <summary>
         /// Set items source and notify about data set changes
         /// </summary>
@@ -201,11 +206,11 @@ namespace GroupRecyclerView.Widgets
 
             foreach (IItemGroup group in ItemsSource)
             {
-                flattenItemsSource.Add(new RecyclerViewAdapterItem(group, true));
+                flattenItemsSource.Add(new RecyclerViewAdapterItem(group, null, true));
 
                 foreach (object item in group)
                 {
-                    flattenItemsSource.Add(new RecyclerViewAdapterItem(item, false));
+                    flattenItemsSource.Add(new RecyclerViewAdapterItem(item, group, false));
                 }
             }
 
@@ -274,16 +279,18 @@ namespace GroupRecyclerView.Widgets
         /// <summary>
         /// Recycler view adapter item wrapper
         /// </summary>
-        private class RecyclerViewAdapterItem
+        private class RecyclerViewAdapterItem : IGroupRecyclerViewAdapterItem
         {
             /// <summary>
             /// Create new instance of item wrapper
             /// </summary>
             /// <param name="item"></param>
+			/// <param name="parent"></param>
             /// <param name="isGroup"></param>
-            public RecyclerViewAdapterItem(object item, bool isGroup)
+            public RecyclerViewAdapterItem(object item, IItemGroup parent, bool isGroup)
             {
                 Item = item;
+                Parent = parent;
                 IsGroup = isGroup;
             }
 
@@ -291,6 +298,11 @@ namespace GroupRecyclerView.Widgets
             /// Wrapped item
             /// </summary>
             public object Item { get; }
+
+            /// <summary>
+            /// Wrapped item's parent
+            /// </summary>
+            public IItemGroup Parent { get; }
 
             /// <summary>
             /// Indicates if this item is a group of items
